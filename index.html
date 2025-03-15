@@ -1,0 +1,501 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sanjina's University Portal</title>
+    <style>
+        :root {
+            --primary-color: #4a6fa5;
+            --secondary-color: #166088;
+            --accent-color: #4fc3dc;
+            --background-color: #f8f9fa;
+            --text-color: #333;
+            --header-bg: #2c3e50;
+            --card-bg: white;
+            --shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background-color: var(--background-color);
+            color: var(--text-color);
+            line-height: 1.6;
+            padding-bottom: 2rem;
+            position: relative;
+            min-height: 100vh;
+        }
+
+        header {
+            background-color: var(--header-bg);
+            color: white;
+            text-align: center;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            box-shadow: var(--shadow);
+        }
+
+        h1 {
+            font-size: 2.5rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .subtitle {
+            font-size: 1.2rem;
+            font-weight: 300;
+            opacity: 0.9;
+        }
+
+        .container {
+            width: 90%;
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+
+        .section {
+            background-color: var(--card-bg);
+            border-radius: 8px;
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+            box-shadow: var(--shadow);
+        }
+
+        h2 {
+            color: var(--secondary-color);
+            margin-bottom: 1rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 2px solid var(--accent-color);
+        }
+
+        .assignments {
+            margin-top: 1.5rem;
+        }
+
+        .assignment-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem;
+            background-color: #f5f7fa;
+            border-radius: 5px;
+            margin-bottom: 0.8rem;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        .assignment-item:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        }
+
+        .assignment-link {
+            text-decoration: none;
+            color: var(--primary-color);
+            font-weight: 500;
+            flex-grow: 1;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+            margin-right: 10px;
+        }
+
+        .assignment-link:hover {
+            text-decoration: underline;
+        }
+
+        .assignment-actions {
+            display: flex;
+            gap: 8px;
+        }
+
+        .btn {
+            padding: 6px 12px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 0.85rem;
+            transition: background-color 0.2s;
+        }
+
+        .btn-rename {
+            background-color: #f0ad4e;
+            color: white;
+        }
+
+        .btn-download {
+            background-color: #5bc0de;
+            color: white;
+        }
+
+        .btn-delete {
+            background-color: #d9534f;
+            color: white;
+            display: none; /* Hidden by default */
+        }
+
+        .btn:hover {
+            opacity: 0.9;
+        }
+
+        .add-assignment {
+            margin-top: 1.5rem;
+            display: flex;
+            gap: 1rem;
+        }
+
+        .add-assignment input {
+            flex-grow: 1;
+            padding: 0.8rem;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 1rem;
+        }
+
+        .add-btn {
+            background-color: var(--primary-color);
+            color: white;
+            padding: 0.8rem 1.5rem;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 1rem;
+            transition: background-color 0.2s;
+        }
+
+        .add-btn:hover {
+            background-color: var(--secondary-color);
+        }
+
+        .admin-login {
+            text-align: center;
+            margin-top: 2rem;
+            color: #999;
+            font-size: 0.9rem;
+            cursor: pointer;
+        }
+
+        .admin-login:hover {
+            color: var(--text-color);
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.5);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal-content {
+            background-color: white;
+            padding: 2rem;
+            border-radius: 8px;
+            width: 90%;
+            max-width: 400px;
+        }
+
+        .modal h3 {
+            margin-bottom: 1rem;
+            color: var(--secondary-color);
+        }
+
+        .modal input {
+            width: 100%;
+            padding: 0.8rem;
+            margin-bottom: 1rem;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+
+        .modal-buttons {
+            display: flex;
+            justify-content: flex-end;
+            gap: 0.8rem;
+        }
+
+        .edit-mode {
+            font-style: italic;
+            color: var(--primary-color);
+            text-align: center;
+            margin-bottom: 1rem;
+            display: none;
+        }
+
+        .copyright {
+            position: fixed;
+            bottom: 10px;
+            right: 20px;
+            font-size: 0.85rem;
+            color: #777;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        @media (max-width: 768px) {
+            .assignment-item {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+            
+            .assignment-actions {
+                margin-top: 0.8rem;
+                align-self: flex-end;
+            }
+            
+            .copyright {
+                position: static;
+                margin-top: 2rem;
+                text-align: center;
+                justify-content: center;
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="container">
+            <h1>Sanjina</h1>
+            <p class="subtitle">University Assignments Portal</p>
+        </div>
+    </header>
+
+    <div class="container">
+        <div id="edit-indicator" class="edit-mode">Admin Mode: Delete Enabled</div>
+        
+        <div class="section">
+            <h2>Assignments</h2>
+            <div id="assignments-list" class="assignments">
+                <!-- Assignment items will be added here -->
+                <p id="no-assignments" style="text-align: center; color: #999;">No assignments added yet</p>
+            </div>
+            
+            <div class="add-assignment">
+                <input type="text" id="assignment-name" placeholder="Assignment Name">
+                <input type="text" id="assignment-link" placeholder="Assignment Link">
+                <button class="add-btn" id="add-assignment-btn">Add</button>
+            </div>
+        </div>
+        
+        <div class="admin-login" id="admin-toggle">Enable Admin Mode</div>
+    </div>
+    
+    <div class="copyright">
+        <span>&copy; 2025 Sanjina. All rights reserved. life is good</span>
+    </div>
+    
+    <!-- Rename Modal -->
+    <div class="modal" id="rename-modal">
+        <div class="modal-content">
+            <h3>Rename Assignment</h3>
+            <input type="text" id="new-name" placeholder="New Assignment Name">
+            <div class="modal-buttons">
+                <button class="btn" id="cancel-rename">Cancel</button>
+                <button class="btn btn-rename" id="confirm-rename">Rename</button>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Admin Login Modal -->
+    <div class="modal" id="admin-modal">
+        <div class="modal-content">
+            <h3>Enter Password</h3>
+            <input type="password" id="admin-password" placeholder="Password">
+            <div class="modal-buttons">
+                <button class="btn" id="cancel-admin">Cancel</button>
+                <button class="btn add-btn" id="confirm-admin">Login</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Store assignments in local storage
+        let assignments = JSON.parse(localStorage.getItem('assignments')) || [];
+        let isAdminMode = false;
+        let currentEditIndex = -1;
+        
+        // Set your password here
+        const adminPassword = "starsandsaturn"; // Updated password
+        
+        // DOM Elements
+        const assignmentsList = document.getElementById('assignments-list');
+        const noAssignments = document.getElementById('no-assignments');
+        const assignmentNameInput = document.getElementById('assignment-name');
+        const assignmentLinkInput = document.getElementById('assignment-link');
+        const addAssignmentBtn = document.getElementById('add-assignment-btn');
+        const adminToggle = document.getElementById('admin-toggle');
+        const editIndicator = document.getElementById('edit-indicator');
+        
+        // Modals
+        const renameModal = document.getElementById('rename-modal');
+        const newNameInput = document.getElementById('new-name');
+        const cancelRenameBtn = document.getElementById('cancel-rename');
+        const confirmRenameBtn = document.getElementById('confirm-rename');
+        
+        const adminModal = document.getElementById('admin-modal');
+        const adminPasswordInput = document.getElementById('admin-password');
+        const cancelAdminBtn = document.getElementById('cancel-admin');
+        const confirmAdminBtn = document.getElementById('confirm-admin');
+        
+        // Functions
+        function renderAssignments() {
+            if (assignments.length === 0) {
+                noAssignments.style.display = 'block';
+                assignmentsList.innerHTML = '';
+                return;
+            }
+            
+            noAssignments.style.display = 'none';
+            assignmentsList.innerHTML = '';
+            
+            assignments.forEach((assignment, index) => {
+                const assignmentItem = document.createElement('div');
+                assignmentItem.className = 'assignment-item';
+                
+                assignmentItem.innerHTML = `
+                    <a href="${assignment.link}" target="_blank" class="assignment-link">${assignment.name}</a>
+                    <div class="assignment-actions">
+                        <button class="btn btn-rename" onclick="renameAssignment(${index})">Rename</button>
+                        <button class="btn btn-download" onclick="downloadAssignment(${index})">Download</button>
+                        <button class="btn btn-delete" onclick="deleteAssignment(${index})">Delete</button>
+                    </div>
+                `;
+                
+                assignmentsList.appendChild(assignmentItem);
+            });
+            
+            // Show delete buttons if in admin mode
+            updateDeleteButtons();
+        }
+        
+        function addAssignment() {
+            const name = assignmentNameInput.value.trim();
+            const link = assignmentLinkInput.value.trim();
+            
+            if (!name || !link) {
+                alert('Please enter both assignment name and link');
+                return;
+            }
+            
+            assignments.push({ name, link });
+            saveAssignments();
+            
+            assignmentNameInput.value = '';
+            assignmentLinkInput.value = '';
+            renderAssignments();
+        }
+        
+        function renameAssignment(index) {
+            currentEditIndex = index;
+            newNameInput.value = assignments[index].name;
+            renameModal.style.display = 'flex';
+        }
+        
+        function confirmRename() {
+            const newName = newNameInput.value.trim();
+            if (!newName) {
+                alert('Please enter a name');
+                return;
+            }
+            
+            assignments[currentEditIndex].name = newName;
+            saveAssignments();
+            renameModal.style.display = 'none';
+            renderAssignments();
+        }
+        
+        function downloadAssignment(index) {
+            // Create a temporary link and click it
+            const assignment = assignments[index];
+            const link = document.createElement('a');
+            link.href = assignment.link;
+            link.download = assignment.name;
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+        }
+        
+        function deleteAssignment(index) {
+            if (confirm('Are you sure you want to delete this assignment?')) {
+                assignments.splice(index, 1);
+                saveAssignments();
+                renderAssignments();
+            }
+        }
+        
+        function saveAssignments() {
+            localStorage.setItem('assignments', JSON.stringify(assignments));
+        }
+        
+        function toggleAdminMode() {
+            adminPasswordInput.value = '';
+            adminModal.style.display = 'flex';
+        }
+        
+        function confirmAdminLogin() {
+            const password = adminPasswordInput.value.trim();
+            
+            if (password === adminPassword) {
+                isAdminMode = !isAdminMode;
+                adminModal.style.display = 'none';
+                
+                adminToggle.textContent = isAdminMode ? 'Disable Admin Mode' : 'Enable Admin Mode';
+                editIndicator.style.display = isAdminMode ? 'block' : 'none';
+                
+                updateDeleteButtons();
+            } else {
+                alert('Incorrect password');
+            }
+        }
+        
+        function updateDeleteButtons() {
+            const deleteButtons = document.querySelectorAll('.btn-delete');
+            deleteButtons.forEach(button => {
+                button.style.display = isAdminMode ? 'inline-block' : 'none';
+            });
+        }
+        
+        // Event Listeners
+        addAssignmentBtn.addEventListener('click', addAssignment);
+        
+        cancelRenameBtn.addEventListener('click', () => {
+            renameModal.style.display = 'none';
+        });
+        
+        confirmRenameBtn.addEventListener('click', confirmRename);
+        
+        adminToggle.addEventListener('click', toggleAdminMode);
+        
+        cancelAdminBtn.addEventListener('click', () => {
+            adminModal.style.display = 'none';
+        });
+        
+        confirmAdminBtn.addEventListener('click', confirmAdminLogin);
+        
+        // Close modals when clicking outside
+        window.addEventListener('click', (event) => {
+            if (event.target === renameModal) {
+                renameModal.style.display = 'none';
+            }
+            if (event.target === adminModal) {
+                adminModal.style.display = 'none';
+            }
+        });
+        
+        // Initial render
+        renderAssignments();
+    </script>
+</body>
+</html>
